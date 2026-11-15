@@ -123,16 +123,16 @@ def seed_database(clean: bool = False):
     # 3. Connect Care Circle Memberships (Crucial!)
     memberships_to_ensure = [
         # Robert's Circle (882104)
-        (user_robert.id, profile_robert.id, "senior", True, True, True),
-        (user_sarah.id, profile_robert.id, "family", True, True, True),
-        (user_elena.id, profile_robert.id, "caregiver", True, True, True),
-        (user_tom.id, profile_robert.id, "other", False, False, False),
+        (user_robert.id, profile_robert.id, "senior", True),
+        (user_sarah.id, profile_robert.id, "family", True),
+        (user_elena.id, profile_robert.id, "caregiver", True),
+        (user_tom.id, profile_robert.id, "other", False),
         # Alice's Circle (994821)
-        (user_robert.id, profile_alice.id, "family", True, True, True),
-        (user_sarah.id, profile_alice.id, "family", True, True, True),
+        (user_robert.id, profile_alice.id, "family", True),
+        (user_sarah.id, profile_alice.id, "family", True),
     ]
 
-    for uid, pid, role, email_notif, sms_notif, push_notif in memberships_to_ensure:
+    for uid, pid, role, email_notif in memberships_to_ensure:
         existing_m = db.query(CareCircleMember).filter(
             CareCircleMember.user_id == uid,
             CareCircleMember.profile_id == pid,
@@ -141,10 +141,8 @@ def seed_database(clean: bool = False):
             db.add(CareCircleMember(
                 user_id=uid,
                 profile_id=pid,
-                role=role,
+                role_in_circle=role,
                 notify_email=email_notif,
-                notify_sms=sms_notif,
-                notify_push=push_notif,
             ))
     db.commit()
     print("Care circle memberships seeded for all demo personas.")
