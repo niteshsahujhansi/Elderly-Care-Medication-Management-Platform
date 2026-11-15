@@ -25,10 +25,10 @@ from app.routers import (
 )
 from app.utils.seeder import seed_database
 
-# Initialize database tables and auto-seed demo data if fresh deployment
+# Initialize database tables and auto-seed clean demo data on startup
 Base.metadata.create_all(bind=engine)
 try:
-    seed_database()
+    seed_database(clean=True)
 except Exception as e:
     print(f"Startup seeder notice: {e}")
 
@@ -87,6 +87,18 @@ def health_check():
         "service": "Elderly Care API",
         "version": "1.0.0",
     }
+
+
+@app.post("/api/admin/reset-database")
+def reset_database_endpoint():
+    try:
+        seed_database(clean=True)
+        return {
+            "status": "ok",
+            "message": "Database completely cleaned and reseeded with pristine demo data!",
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 
 if __name__ == "__main__":
