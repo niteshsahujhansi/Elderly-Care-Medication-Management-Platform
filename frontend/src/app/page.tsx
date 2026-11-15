@@ -33,12 +33,13 @@ import {
   Sparkles,
   Info,
   Edit3,
+  Globe,
 } from 'lucide-react';
 
 export default function Home() {
   const { user, login, signup, demoLogin, isLoading } = useAuth();
   const { activeProfile, activeSummary, accessibleProfiles } = useActiveProfile();
-  const { t, language } = useLanguage();
+  const { t, language, toggleLanguage } = useLanguage();
 
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -230,16 +231,28 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-emerald-50/50 via-slate-50 to-teal-50/30">
         <div className="max-w-md w-full mx-auto space-y-6">
+          {/* Top Bar Switcher for Auth Screen */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold transition shadow-2xs"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
+            </button>
+          </div>
+
           {/* Brand Header */}
           <div className="text-center space-y-2">
             <div className="inline-flex w-14 h-14 rounded-2xl bg-emerald-600 text-white items-center justify-center shadow-xl shadow-emerald-500/20 mb-2">
               <HeartPulse className="w-8 h-8" />
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-              CareCircle
+              {t('app_name', 'CareCircle')}
             </h1>
             <p className="text-sm text-gray-600">
-              Elderly Care & Medication Management Platform
+              {t('app_subtitle', 'Elderly Care Platform')}
             </p>
           </div>
 
@@ -248,7 +261,7 @@ export default function Home() {
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4 text-emerald-600" />
               <h2 className="text-xs font-bold uppercase tracking-wider text-emerald-900">
-                1-Click Demo Personas (For Judges & Testing)
+                {t('one_click_personas', '1-Click Demo Personas (For Judges & Testing)')}
               </h2>
             </div>
             <div className="grid grid-cols-2 gap-2.5">
@@ -261,11 +274,11 @@ export default function Home() {
                 <div className="flex items-center justify-between w-full">
                   <span className="text-base">👴</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded-full">
-                    Senior
+                    {t('senior', 'Senior')}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-gray-900 mt-1">Grandpa Robert</span>
-                <span className="text-[11px] text-gray-500">Kiosk & today&apos;s pills</span>
+                <span className="text-xs font-bold text-gray-900 mt-1">{t('grandpa_name', 'Grandpa Robert')}</span>
+                <span className="text-[11px] text-gray-500">{t('grandpa_sub', "Kiosk & today's pills")}</span>
               </button>
 
               <button
@@ -277,11 +290,11 @@ export default function Home() {
                 <div className="flex items-center justify-between w-full">
                   <span className="text-base">👩</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-200/60 px-2 py-0.5 rounded-full">
-                    Family
+                    {t('family', 'Family')}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-gray-900 mt-1">Daughter Sarah</span>
-                <span className="text-[11px] text-gray-500">Caring for Mom & Dad</span>
+                <span className="text-xs font-bold text-gray-900 mt-1">{t('sarah_name', 'Daughter Sarah')}</span>
+                <span className="text-[11px] text-gray-500">{t('sarah_sub', 'Caring for Mom & Dad')}</span>
               </button>
 
               <button
@@ -293,11 +306,11 @@ export default function Home() {
                 <div className="flex items-center justify-between w-full">
                   <span className="text-base">🩺</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-200/60 px-2 py-0.5 rounded-full">
-                    Caregiver
+                    {t('caregiver', 'Caregiver')}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-gray-900 mt-1">Nurse Elena</span>
-                <span className="text-[11px] text-gray-500">Meds & appointment admin</span>
+                <span className="text-xs font-bold text-gray-900 mt-1">{t('elena_name', 'Nurse Elena')}</span>
+                <span className="text-[11px] text-gray-500">{t('elena_sub', 'Meds & appointment admin')}</span>
               </button>
 
               <button
@@ -309,11 +322,11 @@ export default function Home() {
                 <div className="flex items-center justify-between w-full">
                   <span className="text-base">👁️</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-200/60 px-2 py-0.5 rounded-full">
-                    Viewer
+                    {t('viewer', 'Viewer')}
                   </span>
                 </div>
-                <span className="text-xs font-bold text-gray-900 mt-1">Neighbor Tom</span>
-                <span className="text-[11px] text-gray-500">Read-only monitoring</span>
+                <span className="text-xs font-bold text-gray-900 mt-1">{t('tom_name', 'Neighbor Tom')}</span>
+                <span className="text-[11px] text-gray-500">{t('tom_sub', 'Read-only monitoring')}</span>
               </button>
             </div>
           </div>
@@ -334,7 +347,7 @@ export default function Home() {
                     : 'text-gray-500 hover:text-gray-900'
                 }`}
               >
-                Passcode Sign In
+                {t('passcode_signin', 'Passcode Sign In')}
               </button>
               <button
                 type="button"
@@ -348,7 +361,7 @@ export default function Home() {
                     : 'text-gray-500 hover:text-gray-900'
                 }`}
               >
-                Create New Account
+                {t('create_account', 'Create New Account')}
               </button>
             </div>
 
@@ -363,7 +376,7 @@ export default function Home() {
                 <>
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Your Full Name
+                      {t('full_name', 'Your Full Name')}
                     </label>
                     <input
                       type="text"
@@ -377,17 +390,17 @@ export default function Home() {
 
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Primary Role
+                      {t('primary_role', 'Primary Role')}
                     </label>
                     <select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
                       className="w-full px-3.5 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                     >
-                      <option value="family">Family Member</option>
-                      <option value="caregiver">Professional Caregiver / Nurse</option>
-                      <option value="senior">Senior (Patient)</option>
-                      <option value="other">Other (Read-only Viewer)</option>
+                      <option value="family">{t('family', 'Family Member')}</option>
+                      <option value="caregiver">{t('caregiver', 'Professional Caregiver / Nurse')}</option>
+                      <option value="senior">{t('senior', 'Senior (Patient)')}</option>
+                      <option value="other">{t('viewer', 'Other (Read-only Viewer)')}</option>
                     </select>
                   </div>
                 </>
@@ -395,7 +408,7 @@ export default function Home() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Email or Phone Number
+                  {t('email_phone', 'Email or Phone Number')}
                 </label>
                 <input
                   type="text"
@@ -409,7 +422,7 @@ export default function Home() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-2 text-center">
-                  6-Digit Numeric Passcode (PIN)
+                  {t('pin_label', '6-Digit Numeric Passcode (PIN)')}
                 </label>
                 <PinPad pin={pin} onChange={setPin} maxLength={6} />
               </div>
@@ -420,10 +433,10 @@ export default function Home() {
                 className="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/25 transition focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 {authSubmitting
-                  ? 'Processing...'
+                  ? t('processing', 'Processing...')
                   : authMode === 'login'
-                  ? 'Log In with Passcode'
-                  : 'Complete Registration'}
+                  ? t('login_btn', 'Log In with Passcode')
+                  : t('register_btn', 'Complete Registration')}
               </button>
             </form>
           </div>
@@ -559,19 +572,19 @@ export default function Home() {
                           {activeProfile.name}
                         </h2>
                         <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold">
-                          {activeProfile.age ? `${activeProfile.age} yrs` : 'Senior'} • {activeProfile.gender || 'Patient'}
+                          {activeProfile.age ? `${activeProfile.age} ${t('yrs', 'yrs')}` : t('senior', 'Senior')} • {activeProfile.gender || t('patient', 'Patient')}
                         </span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-emerald-100">
                         <div className="flex items-center gap-1.5 font-mono bg-black/20 px-3 py-1 rounded-lg">
-                          <span>Universal Circle Code:</span>
+                          <span>{t('universal_code', 'Universal Circle Code')}:</span>
                           <span className="font-bold text-white text-sm tracking-wider">
                             {activeProfile.circle_code}
                           </span>
                           <button
                             onClick={handleCopyCode}
-                            title="Copy Code to Invite Family or Nurse"
+                            title={t('copy_code_title', 'Copy Code to Invite Family or Nurse')}
                             className="p-1 hover:text-white transition ml-1"
                           >
                             {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
@@ -580,7 +593,7 @@ export default function Home() {
 
                         {activeProfile.blood_group && (
                           <span className="bg-red-500/30 px-2.5 py-1 rounded-lg font-bold">
-                            Blood: {activeProfile.blood_group}
+                            {t('blood', 'Blood')}: {activeProfile.blood_group}
                           </span>
                         )}
                       </div>
@@ -593,14 +606,14 @@ export default function Home() {
                         onClick={() => setIsEditOpen(true)}
                         className="px-3.5 py-2.5 bg-white/20 hover:bg-white/30 text-white border border-white/20 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
                       >
-                        <Edit3 className="w-3.5 h-3.5" /> Edit Profile
+                        <Edit3 className="w-3.5 h-3.5" /> {t('edit_profile', 'Edit Profile')}
                       </button>
                     )}
                     <button
                       onClick={() => setIsDetailsOpen(true)}
                       className="px-4 py-2.5 bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-bold rounded-xl shadow-md transition flex items-center gap-1.5"
                     >
-                      <Info className="w-4 h-4 text-emerald-600" /> View Medical Card & Circle
+                      <Info className="w-4 h-4 text-emerald-600" /> {t('view_card', 'View Medical Card & Circle')}
                     </button>
                   </div>
                 </div>

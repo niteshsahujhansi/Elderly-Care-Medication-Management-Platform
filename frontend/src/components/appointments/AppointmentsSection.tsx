@@ -7,10 +7,12 @@ import { Appointment, AppointmentListSummary } from '../../lib/types';
 import { AppointmentCard } from './AppointmentCard';
 import { ScheduleAppointmentModal } from './ScheduleAppointmentModal';
 import { EditAppointmentModal } from './EditAppointmentModal';
+import { useLanguage } from '../../context/LanguageContext';
 import { Calendar, Plus, Stethoscope, Clock, CheckCircle2 } from 'lucide-react';
 
 export function AppointmentsSection() {
   const { activeProfile, activeSummary } = useActiveProfile();
+  const { t } = useLanguage();
 
   const [summary, setSummary] = useState<AppointmentListSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -73,7 +75,7 @@ export function AppointmentsSection() {
               </span>
             </div>
             <h2 className="text-2xl font-black text-gray-900 tracking-tight mt-1">
-              Medical Appointments
+              {t('appointments_title', 'Medical Appointments')}
             </h2>
           </div>
         </div>
@@ -85,7 +87,7 @@ export function AppointmentsSection() {
             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center justify-center gap-2 self-start sm:self-auto"
           >
             <Plus className="w-4 h-4" />
-            Schedule Visit
+            {t('schedule_appointment', 'Schedule Visit')}
           </button>
         )}
       </div>
@@ -102,7 +104,7 @@ export function AppointmentsSection() {
           }`}
         >
           <Clock className="w-3.5 h-3.5" />
-          Upcoming Visits ({upcomingList.length})
+          {t('upcoming_appointments', 'Upcoming Visits')} ({upcomingList.length})
         </button>
 
         <button
@@ -115,7 +117,7 @@ export function AppointmentsSection() {
           }`}
         >
           <CheckCircle2 className="w-3.5 h-3.5" />
-          Past & Completed ({pastList.length})
+          {t('past_appointments', 'Past & Completed')} ({pastList.length})
         </button>
       </div>
 

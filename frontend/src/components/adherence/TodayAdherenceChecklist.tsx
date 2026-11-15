@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { TodayAdherenceSummary, TodayDoseItem } from '../../lib/types';
 import { SkipDoseModal } from './SkipDoseModal';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface TodayAdherenceChecklistProps {
   summary: TodayAdherenceSummary | null;
@@ -64,6 +65,7 @@ export function TodayAdherenceChecklist({
   onSkipDose,
   onResetDose,
 }: TodayAdherenceChecklistProps) {
+  const { t, language } = useLanguage();
   const [skipModalDose, setSkipModalDose] = useState<TodayDoseItem | null>(null);
   const [processingId, setProcessingId] = useState<number | null>(null);
 
@@ -113,10 +115,10 @@ export function TodayAdherenceChecklist({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full">
-              Today&apos;s Checklist
+              {t('nav_today', "Today's Checklist")}
             </span>
             <span className="text-xs text-gray-500 font-medium">
-              {new Date().toLocaleDateString('en-US', {
+              {new Date().toLocaleDateString(language === 'hi' ? 'hi-IN' : 'en-US', {
                 weekday: 'long',
                 month: 'short',
                 day: 'numeric',
@@ -124,7 +126,7 @@ export function TodayAdherenceChecklist({
             </span>
           </div>
           <h2 className="text-2xl font-black text-gray-900 tracking-tight mt-1">
-            Daily Medication Routine
+            {t('today_routine_title', 'Daily Medication Routine')}
           </h2>
         </div>
 
@@ -132,10 +134,10 @@ export function TodayAdherenceChecklist({
         <div className="flex items-center gap-3 bg-emerald-50/80 border border-emerald-200/70 p-3 rounded-2xl">
           <div className="text-right">
             <span className="text-xs font-semibold text-emerald-900 block">
-              {summary.taken_count} of {summary.total_doses} Doses Taken
+              {summary.taken_count} / {summary.total_doses} {t('taken_doses', 'Taken')}
             </span>
             <span className="text-[11px] text-emerald-700">
-              {summary.pending_count > 0 ? `${summary.pending_count} pending today` : 'All scheduled doses logged'}
+              {summary.pending_count > 0 ? `${summary.pending_count} ${t('due', 'pending')}` : t('all_doses_completed', 'All scheduled doses logged')}
             </span>
           </div>
           <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-emerald-600/20">
@@ -199,13 +201,13 @@ export function TodayAdherenceChecklist({
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-gray-900 tracking-tight">
-                      {config.label}
+                      {t('slot_' + slotKey, config.label)}
                     </h3>
                     <span className="text-[11px] text-gray-400">{config.timeRange}</span>
                   </div>
                 </div>
                 <span className="text-xs font-semibold text-gray-400">
-                  {doses.filter((d) => d.status === 'taken').length}/{doses.length} taken
+                  {doses.filter((d) => d.status === 'taken').length}/{doses.length} {t('taken_doses', 'taken')}
                 </span>
               </div>
 
@@ -276,7 +278,7 @@ export function TodayAdherenceChecklist({
                           {/* Status info line if taken or skipped */}
                           {isTaken && (
                             <div className="mt-2 flex items-center gap-2 text-xs font-semibold text-emerald-800">
-                              <span>✅ Taken</span>
+                              <span>✅ {t('dose_taken', 'Taken')}</span>
                               {dose.logged_by_name && (
                                 <span className="text-emerald-700">
                                   by <strong className="font-bold">{dose.logged_by_name}</strong>
@@ -295,7 +297,7 @@ export function TodayAdherenceChecklist({
 
                           {isSkipped && (
                             <div className="mt-2 flex items-center gap-2 text-xs font-semibold text-amber-800">
-                              <span>⏭️ Skipped</span>
+                              <span>⏭️ {t('dose_skipped', 'Skipped')}</span>
                               {dose.notes && (
                                 <span className="italic">(&ldquo;{dose.notes}&rdquo;)</span>
                               )}
@@ -320,7 +322,7 @@ export function TodayAdherenceChecklist({
                               className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                             >
                               <CheckCircle2 className="w-4 h-4" />
-                              {processingId === dose.medication_id ? 'Logging...' : 'Take Dose'}
+                              {processingId === dose.medication_id ? t('processing', 'Logging...') : t('take_dose', 'Take Dose')}
                             </button>
 
                             <button
@@ -328,9 +330,9 @@ export function TodayAdherenceChecklist({
                               disabled={processingId === dose.medication_id}
                               onClick={() => setSkipModalDose(dose)}
                               className="px-3 py-2.5 bg-gray-100 hover:bg-amber-100 text-gray-700 hover:text-amber-900 text-xs font-semibold rounded-xl transition flex items-center gap-1"
-                              title="Skip Dose"
+                              title={t('skip_dose', 'Skip Dose')}
                             >
-                              Skip
+                              {t('skip_dose', 'Skip')}
                             </button>
                           </>
                         )}
@@ -344,7 +346,7 @@ export function TodayAdherenceChecklist({
                             title="Undo accidental log"
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
-                            {processingId === dose.log_id ? 'Undoing...' : 'Undo'}
+                            {processingId === dose.log_id ? t('processing', 'Undoing...') : t('undo', 'Undo')}
                           </button>
                         )}
 

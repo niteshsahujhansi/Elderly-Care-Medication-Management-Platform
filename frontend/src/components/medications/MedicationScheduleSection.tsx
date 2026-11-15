@@ -8,6 +8,7 @@ import { MedicationCard } from './MedicationCard';
 import { AddMedicationModal } from './AddMedicationModal';
 import { EditMedicationModal } from './EditMedicationModal';
 import { DeleteMedicationModal } from './DeleteMedicationModal';
+import { useLanguage } from '../../context/LanguageContext';
 import { Pill, Plus, Calendar, Sparkles } from 'lucide-react';
 
 interface MedicationScheduleSectionProps {
@@ -16,6 +17,7 @@ interface MedicationScheduleSectionProps {
 
 export function MedicationScheduleSection({ onMedicationChanged }: MedicationScheduleSectionProps = {}) {
   const { activeProfile, activeSummary } = useActiveProfile();
+  const { t } = useLanguage();
   const [groupedMeds, setGroupedMeds] = useState<SlotGroupedMedications | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -90,9 +92,9 @@ export function MedicationScheduleSection({ onMedicationChanged }: MedicationSch
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xl font-extrabold text-gray-900">Medication Schedule</h3>
+              <h3 className="text-xl font-extrabold text-gray-900">{t('meds_title', 'Medication Schedule')}</h3>
               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                {groupedMeds?.total_count || 0} Prescriptions
+                {groupedMeds?.total_count || 0} {t('nav_medications', 'Prescriptions')}
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -106,7 +108,7 @@ export function MedicationScheduleSection({ onMedicationChanged }: MedicationSch
             onClick={() => setIsAddOpen(true)}
             className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center justify-center gap-1.5 self-start sm:self-auto"
           >
-            <Plus className="w-4 h-4" /> Add Medication
+            <Plus className="w-4 h-4" /> {t('add_medication', 'Add Medication')}
           </button>
         )}
       </div>

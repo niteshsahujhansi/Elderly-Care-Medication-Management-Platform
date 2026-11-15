@@ -3,6 +3,7 @@
 import React from 'react';
 import { Calendar, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { WeeklyAdherenceHistory } from '../../lib/types';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface WeeklyStreakCardProps {
   history: WeeklyAdherenceHistory | null;
@@ -10,6 +11,7 @@ interface WeeklyStreakCardProps {
 }
 
 export function WeeklyStreakCard({ history, loading }: WeeklyStreakCardProps) {
+  const { t } = useLanguage();
   if (loading) {
     return (
       <div className="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-sm animate-pulse">
@@ -40,10 +42,10 @@ export function WeeklyStreakCard({ history, loading }: WeeklyStreakCardProps) {
           </div>
           <div>
             <h3 className="text-base font-extrabold text-gray-900 tracking-tight">
-              7-Day Adherence Trend
+              {t('weekly_streak_title', '7-Day Adherence Trend')}
             </h3>
             <p className="text-xs text-gray-500">
-              Daily medication consistency & streak tracking
+              {t('weekly_streak_desc', 'Daily medication consistency & streak tracking')}
             </p>
           </div>
         </div>

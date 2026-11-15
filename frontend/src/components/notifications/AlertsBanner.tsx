@@ -5,6 +5,7 @@ import { useActiveProfile } from '../../context/ActiveProfileContext';
 import { api } from '../../lib/api';
 import { NotificationLog, AlertScanResult } from '../../lib/types';
 import { NotificationHistoryModal } from './NotificationHistoryModal';
+import { useLanguage } from '../../context/LanguageContext';
 import {
   Bell,
   Send,
@@ -19,6 +20,7 @@ import {
 
 export function AlertsBanner() {
   const { activeProfile, activeSummary } = useActiveProfile();
+  const { t } = useLanguage();
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [submitting, setSubmitting] = useState<string | null>(null);
@@ -71,11 +73,11 @@ export function AlertsBanner() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-base font-extrabold tracking-tight text-white">
-                  Proactive Email Reminders & Escalations
+                  {t('alerts_title', 'Proactive Email Reminders & Escalations')}
                 </h3>
                 <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  Engine Active
+                  {t('engine_active', 'Engine Active')}
                 </span>
               </div>
               <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
@@ -96,7 +98,7 @@ export function AlertsBanner() {
                   title="Dispatch instant simulated missed-dose email"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  {submitting === 'missed_dose_alert' ? 'Dispatching...' : 'Test Missed-Dose Alert'}
+                  {submitting === 'missed_dose_alert' ? t('processing', 'Dispatching...') : t('test_alert', 'Test Missed-Dose Alert')}
                 </button>
 
                 <button
@@ -107,7 +109,7 @@ export function AlertsBanner() {
                   title="Scan today's routine for overdue doses"
                 >
                   <Search className="w-3.5 h-3.5 text-teal-300" />
-                  {submitting === 'scan' ? 'Scanning...' : 'Scan Overdue Now'}
+                  {submitting === 'scan' ? t('processing', 'Scanning...') : t('scan_now', 'Scan Overdue Now')}
                 </button>
               </>
             )}
@@ -118,7 +120,7 @@ export function AlertsBanner() {
               className="px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/15 transition flex items-center gap-1.5"
             >
               <History className="w-3.5 h-3.5 text-slate-300" />
-              Alert History
+              {t('view_history', 'Alert History')}
             </button>
           </div>
         </div>
