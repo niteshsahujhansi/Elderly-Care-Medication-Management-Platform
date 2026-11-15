@@ -20,6 +20,7 @@ import { AppointmentsSection } from '../components/appointments/AppointmentsSect
 import { AlertsBanner } from '../components/notifications/AlertsBanner';
 import { NotificationHistoryModal } from '../components/notifications/NotificationHistoryModal';
 import { EmergencySosModal } from '../components/emergency/EmergencySosModal';
+import { AiCompanionSection } from '../components/companion/AiCompanionSection';
 import {
   HeartPulse,
   Users,
@@ -527,6 +528,18 @@ export default function Home() {
           </button>
           <button
             type="button"
+            onClick={() => setActiveNav('companion')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition flex items-center gap-1.5 ${
+              activeNav === 'companion'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+            {t('nav_companion', 'AI Companion')}
+          </button>
+          <button
+            type="button"
             onClick={() => setIsSosOpen(true)}
             className="px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap bg-red-600 text-white shadow-sm flex items-center gap-1 animate-pulse shrink-0"
           >
@@ -648,6 +661,13 @@ export default function Home() {
                     history={adherenceHistory}
                     loading={adherenceLoading}
                   />
+                </div>
+              )}
+
+              {/* TAB: AI COMPANION & WELLNESS */}
+              {activeNav === 'companion' && (
+                <div className="space-y-6">
+                  <AiCompanionSection />
                 </div>
               )}
 

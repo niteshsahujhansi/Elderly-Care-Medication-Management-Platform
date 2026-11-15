@@ -13,9 +13,10 @@ import {
   Users,
   LogOut,
   User as UserIcon,
+  Sparkles,
 } from 'lucide-react';
 
-export type NavView = 'today' | 'medications' | 'appointments' | 'alerts' | 'circle';
+export type NavView = 'today' | 'companion' | 'medications' | 'appointments' | 'alerts' | 'circle';
 
 interface SidebarProps {
   activeView: NavView;
@@ -77,6 +78,14 @@ export function Sidebar({
       label: t('nav_circle', 'Care Circle & Card'),
       description: t('nav_circle_desc', 'Vitals, members & code'),
       icon: Users,
+    },
+    {
+      id: 'companion',
+      label: t('nav_companion', 'AI Companion'),
+      description: t('nav_companion_desc', 'Mood, exercise & wellness'),
+      icon: Sparkles,
+      badge: 'AI ✨',
+      badgeColor: 'bg-purple-100 text-purple-800',
     },
   ];
 

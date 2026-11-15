@@ -14,6 +14,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     // Navigation Items
     nav_today: "Today's Routine",
     nav_today_desc: 'Daily checklist & adherence',
+    nav_companion: 'AI Companion & Wellness',
+    nav_companion_desc: 'Daily mood, exercise & AI refresh',
     nav_medications: 'Prescriptions',
     nav_medications_desc: 'Medication schedule & slots',
     nav_appointments: 'Doctor Appointments',
@@ -153,6 +155,8 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     // Navigation Items
     nav_today: 'दैनिक दिनचर्या',
     nav_today_desc: 'आज की दवाइयाँ और स्थिति',
+    nav_companion: 'AI साथी और वेलनेस',
+    nav_companion_desc: 'दैनिक मूड, व्यायाम और प्रेरक सुझाव',
     nav_medications: 'दवाइयों की सूची',
     nav_medications_desc: 'खुराक, समय और निर्देश',
     nav_appointments: 'डॉक्टर अपॉइंटमेंट्स',
