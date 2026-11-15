@@ -6,18 +6,19 @@ import { useActiveProfile } from '../../context/ActiveProfileContext';
 import { ProfileSwitcher } from './ProfileSwitcher';
 import { NotificationBell } from '../notifications/NotificationBell';
 import { useLanguage } from '../../context/LanguageContext';
-import { HeartPulse, LogOut, User as UserIcon, Globe } from 'lucide-react';
+import { HeartPulse, LogOut, User as UserIcon, Globe, ShieldAlert } from 'lucide-react';
 
 interface HeaderProps {
   onCreateProfileClick: () => void;
   onJoinCircleClick: () => void;
   onOpenNotificationsClick?: () => void;
+  onSosClick?: () => void;
 }
 
-export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotificationsClick }: HeaderProps) {
+export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotificationsClick, onSosClick }: HeaderProps) {
   const { user, logout } = useAuth();
   const { activeSummary } = useActiveProfile();
-  const { language, toggleLanguage } = useLanguage();
+  const { language, toggleLanguage, t } = useLanguage();
 
   const currentRole = activeSummary?.role_in_circle || user?.default_role || 'family';
 
@@ -50,6 +51,19 @@ export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotifica
         {/* User info, Notifications & Logout */}
         {user && (
           <div className="flex items-center gap-3">
+            {/* Indian Emergency SOS Button */}
+            {onSosClick && (
+              <button
+                type="button"
+                onClick={onSosClick}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black tracking-wide shadow-md shadow-red-600/30 transition animate-pulse"
+                title="Emergency SOS / आपातकालीन सहायता"
+              >
+                <ShieldAlert className="w-3.5 h-3.5 text-white" />
+                <span>{t('sos_button', '🚨 SOS')}</span>
+              </button>
+            )}
+
             {/* Hindi / English Language Toggle */}
             <button
               type="button"

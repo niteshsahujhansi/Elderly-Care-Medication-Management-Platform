@@ -19,6 +19,7 @@ import { WeeklyStreakCard } from '../components/adherence/WeeklyStreakCard';
 import { AppointmentsSection } from '../components/appointments/AppointmentsSection';
 import { AlertsBanner } from '../components/notifications/AlertsBanner';
 import { NotificationHistoryModal } from '../components/notifications/NotificationHistoryModal';
+import { EmergencySosModal } from '../components/emergency/EmergencySosModal';
 import {
   HeartPulse,
   Users,
@@ -47,6 +48,7 @@ export default function Home() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false);
+  const [isSosOpen, setIsSosOpen] = useState(false);
 
   // Navigation view state
   const [activeNav, setActiveNav] = useState<NavView>('today');
@@ -463,6 +465,7 @@ export default function Home() {
           onCreateProfileClick={() => setIsCreateOpen(true)}
           onJoinCircleClick={() => setIsJoinOpen(true)}
           onOpenNotificationsClick={() => setIsNotificationHistoryOpen(true)}
+          onSosClick={() => setIsSosOpen(true)}
         />
 
         {/* Mobile Navigation Tabs (visible only on mobile) */}
@@ -521,6 +524,14 @@ export default function Home() {
             }`}
           >
             {t('nav_circle', 'Care Circle')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsSosOpen(true)}
+            className="px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap bg-red-600 text-white shadow-sm flex items-center gap-1 animate-pulse shrink-0"
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span>SOS</span>
           </button>
         </div>
 
@@ -826,6 +837,11 @@ export default function Home() {
           onClose={() => setIsNotificationHistoryOpen(false)}
         />
       )}
+      <EmergencySosModal
+        isOpen={isSosOpen}
+        onClose={() => setIsSosOpen(false)}
+        profile={activeProfile}
+      />
     </div>
   );
 }

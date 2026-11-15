@@ -124,6 +124,19 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     joined: 'Joined',
     email_alerts_on: 'Email alerts on',
 
+    // Emergency SOS
+    sos_button: '🚨 SOS Emergency',
+    sos_modal_title: 'Emergency Medical SOS',
+    sos_modal_desc: 'Immediate emergency contacts and clinical dispatch for',
+    call_national_emergency: 'National Emergency (112)',
+    call_ambulance: 'Ambulance (108)',
+    call_elderline: 'Senior ElderLine (14567)',
+    call_primary_contact: 'Call Family Emergency Contact',
+    critical_medical_info: 'Critical Medical Summary (For Paramedics)',
+    broadcast_emergency: 'Broadcast SOS to Care Circle',
+    sos_broadcast_sent: 'Emergency SOS alert sent to all Care Circle members!',
+    close: 'Close',
+
     // Language Toggle
     lang_toggle: 'हिंदी',
   },
@@ -249,6 +262,19 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
     join_code: 'सर्कल कोड',
     joined: 'जुड़े',
     email_alerts_on: 'ईमेल अलर्ट सक्रिय',
+
+    // Emergency SOS
+    sos_button: '🚨 आपातकालीन SOS',
+    sos_modal_title: 'आपातकालीन चिकित्सा SOS',
+    sos_modal_desc: 'तत्काल सहायता और पैरामेडिक जानकारी:',
+    call_national_emergency: 'राष्ट्रीय आपातकालीन सेवा (112)',
+    call_ambulance: 'एम्बुलेंस (108)',
+    call_elderline: 'वरिष्ठ नागरिक हेल्पलाइन (14567)',
+    call_primary_contact: 'परिवार आपातकालीन संपर्क को कॉल करें',
+    critical_medical_info: 'महत्वपूर्ण स्वास्थ्य जानकारी (डॉक्टर/पैरामेडिक्स हेतु)',
+    broadcast_emergency: 'पूरे केयर सर्कल को आपातकालीन SOS भेजें',
+    sos_broadcast_sent: 'आपातकालीन सूचना सभी परिवार व नर्सों को भेज दी गई है!',
+    close: 'बंद करें',
 
     // Language Toggle
     lang_toggle: 'English',

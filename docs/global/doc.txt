@@ -26,7 +26,8 @@ innovation
 hindi/english mode
 
 Ai suggestions daily/ falback to offline data (just for Hackathon)
-How are you feeling today ? here are some mood refreshments
+How are you feeling today ? (take input as emoji) 
+here are some mood refreshments
 letest news, 
 financial advice, 
 available work if intrested, 
@@ -35,3 +36,10 @@ Motivation quote,
 generation health suggestion, 
 today's joke
 Connect with same age group people
+
+Dailly call/ meeting rating by person (who you (elderly) like or dislike)
+Ragular exercises tracker
+
+Ai companion to just talk ( mental health)
+Alert if person goes beyond fixed area
+
