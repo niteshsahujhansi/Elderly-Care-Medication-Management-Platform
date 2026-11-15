@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useActiveProfile } from '../context/ActiveProfileContext';
+import { useLanguage } from '../context/LanguageContext';
 import { api } from '../lib/api';
 import { TodayAdherenceSummary, WeeklyAdherenceHistory, CircleMemberDetail } from '../lib/types';
 import { Header } from '../components/navigation/Header';
@@ -37,6 +38,7 @@ import {
 export default function Home() {
   const { user, login, signup, demoLogin, isLoading } = useAuth();
   const { activeProfile, activeSummary, accessibleProfiles } = useActiveProfile();
+  const { t, language } = useLanguage();
 
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -461,7 +463,7 @@ export default function Home() {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Routine {adherenceSummary?.pending_count ? `(${adherenceSummary.pending_count})` : ''}
+            {t('nav_today', 'Routine')} {adherenceSummary?.pending_count ? `(${adherenceSummary.pending_count})` : ''}
           </button>
           <button
             type="button"
@@ -472,7 +474,7 @@ export default function Home() {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Prescriptions
+            {t('nav_medications', 'Prescriptions')}
           </button>
           <button
             type="button"
@@ -483,7 +485,7 @@ export default function Home() {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Appointments
+            {t('nav_appointments', 'Appointments')}
           </button>
           <button
             type="button"
@@ -494,7 +496,7 @@ export default function Home() {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Alerts {unreadAlertsCount > 0 ? `(${unreadAlertsCount})` : ''}
+            {t('nav_alerts', 'Alerts')} {unreadAlertsCount > 0 ? `(${unreadAlertsCount})` : ''}
           </button>
           <button
             type="button"
@@ -505,7 +507,7 @@ export default function Home() {
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Care Circle
+            {t('nav_circle', 'Care Circle')}
           </button>
         </div>
 
@@ -655,7 +657,7 @@ export default function Home() {
                         <ShieldAlert className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Emergency Contact</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('emergency_contact', 'Emergency Contact')}</p>
                         <p className="text-sm font-bold text-gray-900 mt-0.5">
                           {activeProfile.emergency_contact_name || 'Sarah (Daughter)'}
                         </p>
@@ -668,7 +670,7 @@ export default function Home() {
                         <Stethoscope className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Primary Physician</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('primary_physician', 'Primary Physician')}</p>
                         <p className="text-sm font-bold text-gray-900 mt-0.5">
                           {activeProfile.primary_physician_name || 'Dr. Sarah Adams'}
                         </p>
@@ -681,7 +683,7 @@ export default function Home() {
                         <Pill className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Known Allergies</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('known_allergies', 'Known Allergies')}</p>
                         <p className="text-sm font-bold text-gray-900 mt-0.5">
                           {activeProfile.allergies || 'Penicillin, Peanuts'}
                         </p>
@@ -694,7 +696,7 @@ export default function Home() {
                         <Users className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Circle Code</p>
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('circle_code', 'Circle Code')}</p>
                         <p className="text-base font-bold text-blue-700 font-mono mt-0.5">
                           {activeProfile.circle_code}
                         </p>
@@ -707,15 +709,15 @@ export default function Home() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <h3 className="text-lg font-bold text-gray-900">
-                          Care Circle Members ({circleMembers.length})
+                          {t('care_circle_members', 'Care Circle Members')} ({circleMembers.length})
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">
-                          Connected individuals actively monitoring and supporting {activeProfile.name}&apos;s care routine.
+                          {t('care_circle_desc', "Connected individuals actively monitoring and supporting care routine.")}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3.5 py-1.5 rounded-xl">
-                        <span className="text-xs text-emerald-800 font-medium">Circle Code:</span>
+                        <span className="text-xs text-emerald-800 font-medium">{t('join_code', 'Circle Code')}:</span>
                         <span className="font-mono font-bold text-emerald-900 text-sm">{activeProfile.circle_code}</span>
                         <button
                           onClick={handleCopyCode}
@@ -774,9 +776,9 @@ export default function Home() {
                                     {member.email_or_phone}
                                   </p>
                                   <div className="flex items-center gap-2 mt-2 text-[11px] text-gray-400">
-                                    <span>Joined {new Date(member.joined_at).toLocaleDateString()}</span>
+                                    <span>{t('joined', 'Joined')} {new Date(member.joined_at).toLocaleDateString()}</span>
                                     {member.notify_email && (
-                                      <span className="text-emerald-600 font-medium">• Email alerts on</span>
+                                      <span className="text-emerald-600 font-medium">• {t('email_alerts_on', 'Email alerts on')}</span>
                                     )}
                                   </div>
                                 </div>

@@ -3,11 +3,14 @@
 import React, { ReactNode } from 'react';
 import { AuthProvider } from '../../context/AuthContext';
 import { ActiveProfileProvider } from '../../context/ActiveProfileContext';
+import { LanguageProvider } from '../../context/LanguageContext';
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <ActiveProfileProvider>{children}</ActiveProfileProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <ActiveProfileProvider>{children}</ActiveProfileProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

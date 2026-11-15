@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useActiveProfile } from '../../context/ActiveProfileContext';
+import { useLanguage } from '../../context/LanguageContext';
 import {
   HeartPulse,
   CheckCircle2,
@@ -31,6 +32,7 @@ export function Sidebar({
 }: SidebarProps) {
   const { user, logout } = useAuth();
   const { activeSummary } = useActiveProfile();
+  const { t } = useLanguage();
 
   const currentRole = activeSummary?.role_in_circle || user?.default_role || 'family';
 
@@ -44,36 +46,36 @@ export function Sidebar({
   }[] = [
     {
       id: 'today',
-      label: "Today's Routine",
-      description: 'Daily checklist & adherence',
+      label: t('nav_today', "Today's Routine"),
+      description: t('nav_today_desc', 'Daily checklist & adherence'),
       icon: CheckCircle2,
-      badge: todayPendingCount > 0 ? `${todayPendingCount} due` : 'Done',
+      badge: todayPendingCount > 0 ? `${todayPendingCount} ${t('due', 'due')}` : t('done', 'Done'),
       badgeColor: todayPendingCount > 0 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800',
     },
     {
       id: 'medications',
-      label: 'Prescriptions',
-      description: 'Medication schedule & slots',
+      label: t('nav_medications', 'Prescriptions'),
+      description: t('nav_medications_desc', 'Medication schedule & slots'),
       icon: CalendarDays,
     },
     {
       id: 'appointments',
-      label: 'Doctor Appointments',
-      description: 'Clinic visits & preparation',
+      label: t('nav_appointments', 'Doctor Appointments'),
+      description: t('nav_appointments_desc', 'Clinic visits & preparation'),
       icon: Stethoscope,
     },
     {
       id: 'alerts',
-      label: 'Proactive Alerts',
-      description: 'Email engine & escalations',
+      label: t('nav_alerts', 'Proactive Alerts'),
+      description: t('nav_alerts_desc', 'Email engine & escalations'),
       icon: Bell,
       badge: unreadAlertsCount > 0 ? unreadAlertsCount : null,
       badgeColor: 'bg-rose-100 text-rose-800',
     },
     {
       id: 'circle',
-      label: 'Care Circle & Card',
-      description: 'Vitals, members & code',
+      label: t('nav_circle', 'Care Circle & Card'),
+      description: t('nav_circle_desc', 'Vitals, members & code'),
       icon: Users,
     },
   ];
@@ -87,9 +89,9 @@ export function Sidebar({
         </div>
         <div>
           <h1 className="font-extrabold text-gray-900 leading-tight text-base tracking-tight">
-            CareCircle
+            {t('app_name', 'CareCircle')}
           </h1>
-          <p className="text-[11px] text-gray-500 font-medium">Elderly Care Platform</p>
+          <p className="text-[11px] text-gray-500 font-medium">{t('app_subtitle', 'Elderly Care Platform')}</p>
         </div>
       </div>
 

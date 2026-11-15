@@ -5,7 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useActiveProfile } from '../../context/ActiveProfileContext';
 import { ProfileSwitcher } from './ProfileSwitcher';
 import { NotificationBell } from '../notifications/NotificationBell';
-import { HeartPulse, LogOut, User as UserIcon } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
+import { HeartPulse, LogOut, User as UserIcon, Globe } from 'lucide-react';
 
 interface HeaderProps {
   onCreateProfileClick: () => void;
@@ -16,6 +17,7 @@ interface HeaderProps {
 export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotificationsClick }: HeaderProps) {
   const { user, logout } = useAuth();
   const { activeSummary } = useActiveProfile();
+  const { language, toggleLanguage } = useLanguage();
 
   const currentRole = activeSummary?.role_in_circle || user?.default_role || 'family';
 
@@ -48,6 +50,17 @@ export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotifica
         {/* User info, Notifications & Logout */}
         {user && (
           <div className="flex items-center gap-3">
+            {/* Hindi / English Language Toggle */}
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              title="Switch Language / भाषा बदलें"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-gray-50/80 hover:bg-gray-100 text-gray-700 text-xs font-bold transition shadow-2xs"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{language === 'en' ? 'हिन्दी' : 'English'}</span>
+            </button>
+
             {/* In-App Notifications Bell */}
             <NotificationBell onViewAllClick={onOpenNotificationsClick} />
 
