@@ -1,0 +1,215 @@
+import hashlib
+from app.database import SessionLocal, engine, Base
+from app.models.user_and_profile import User, ElderlyProfile, CareCircleMember
+from app.models.medication import Medication
+
+def hash_passcode(pin: str) -> str:
+    return hashlib.sha256(pin.strip().encode()).hexdigest()
+
+def seed_database():
+    Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+
+    print("--- Seeding Database for Elderly Care & Medication Management Platform ---")
+
+    # 1. Ensure Demo Users (PIN: 123456)
+    pin_hash = hash_passcode("123456")
+    user_robert = db.query(User).filter(User.email_or_phone == "robert@demo.care").first()
+    if not user_robert:
+        user_robert = User(name="Robert Jenkins (Grandpa)", email_or_phone="robert@demo.care", passcode=pin_hash, default_role="senior")
+        db.add(user_robert)
+    
+    user_sarah = db.query(User).filter(User.email_or_phone == "sarah@demo.care").first()
+    if not user_sarah:
+        user_sarah = User(name="Sarah Jenkins (Daughter)", email_or_phone="sarah@demo.care", passcode=pin_hash, default_role="family")
+        db.add(user_sarah)
+
+    user_elena = db.query(User).filter(User.email_or_phone == "elena@demo.care").first()
+    if not user_elena:
+        user_elena = User(name="Nurse Elena Vance", email_or_phone="elena@demo.care", passcode=pin_hash, default_role="caregiver")
+        db.add(user_elena)
+
+    user_tom = db.query(User).filter(User.email_or_phone == "tom@demo.care").first()
+    if not user_tom:
+        user_tom = User(name="Neighbor Tom", email_or_phone="tom@demo.care", passcode=pin_hash, default_role="other")
+        db.add(user_tom)
+
+    db.commit()
+    db.refresh(user_robert)
+    db.refresh(user_sarah)
+    db.refresh(user_elena)
+    db.refresh(user_tom)
+
+    # 2. Profiles
+    profile_robert = db.query(ElderlyProfile).filter(ElderlyProfile.circle_code == "882104").first()
+    if not profile_robert:
+        profile_robert = ElderlyProfile(
+            circle_code="882104",
+            name="Robert Jenkins",
+            date_of_birth="1948-05-12",
+            age=78,
+            gender="Male",
+            blood_group="O+",
+            primary_phone="+1-555-0100",
+            emergency_phone="+1-555-0199",
+            emergency_contact_name="Sarah Jenkins (Daughter)",
+            primary_physician_name="Dr. Sarah Adams",
+            primary_physician_phone="+1-555-0222",
+            hospital_preference="City Memorial Hospital",
+            allergies="Penicillin, Peanuts",
+            chronic_conditions="Type 2 Diabetes, Hypertension, Mild Osteoarthritis",
+            dietary_restrictions="Low sodium, Diabetic diet, Avoid grapefruit",
+            mobility_status="Independent with Cane",
+            preferred_language="English",
+            room_or_address="42 Elm St, Springfield",
+            insurance_provider="Medicare Blue Shield",
+            insurance_policy_number="MED-884920",
+            special_care_instructions="Needs reading glasses. Prefers morning medication after oatmeal breakfast.",
+        )
+        db.add(profile_robert)
+        db.commit()
+        db.refresh(profile_robert)
+
+    profile_alice = db.query(ElderlyProfile).filter(ElderlyProfile.circle_code == "994821").first()
+    if not profile_alice:
+        profile_alice = ElderlyProfile(
+            circle_code="994821",
+            name="Alice Jenkins",
+            date_of_birth="1951-09-24",
+            age=75,
+            gender="Female",
+            blood_group="A+",
+            primary_phone="+1-555-0101",
+            emergency_phone="+1-555-0199",
+            emergency_contact_name="Robert Jenkins (Husband) / Sarah Jenkins (Daughter)",
+            primary_physician_name="Dr. Michael Chen",
+            primary_physician_phone="+1-555-0333",
+            hospital_preference="St. Jude Medical Center",
+            allergies="Sulfa antibiotics",
+            chronic_conditions="Osteoporosis, Mild Glaucoma",
+            dietary_restrictions="High calcium, low caffeine",
+            mobility_status="Independent",
+            preferred_language="English",
+            room_or_address="42 Elm St, Springfield",
+            insurance_provider="Aetna Senior Health",
+            insurance_policy_number="AET-773109",
+            special_care_instructions="Take eye drops 10 minutes before bedtime.",
+        )
+        db.add(profile_alice)
+        db.commit()
+        db.refresh(profile_alice)
+
+    # 3. Seed Prescriptions for Grandpa Robert (Profile ID: profile_robert.id)
+    robert_med_count = db.query(Medication).filter(Medication.profile_id == profile_robert.id).count()
+    if robert_med_count == 0:
+        meds_robert = [
+            Medication(
+                profile_id=profile_robert.id,
+                name="Metformin",
+                dosage="500 mg",
+                time_slot="morning",
+                exact_time="08:00",
+                frequency="daily",
+                instructions="Take with food after breakfast",
+                purpose="Blood sugar regulation (Type 2 Diabetes)",
+                pill_shape="Round",
+                pill_color="White",
+                inventory_count=45,
+            ),
+            Medication(
+                profile_id=profile_robert.id,
+                name="Vitamin D3",
+                dosage="1000 IU",
+                time_slot="afternoon",
+                exact_time="13:00",
+                frequency="daily",
+                instructions="Take with lunch",
+                purpose="Bone & joint health",
+                pill_shape="Capsule",
+                pill_color="Yellow",
+                inventory_count=60,
+            ),
+            Medication(
+                profile_id=profile_robert.id,
+                name="Lisinopril",
+                dosage="10 mg",
+                time_slot="evening",
+                exact_time="19:00",
+                frequency="daily",
+                instructions="Take with dinner and a full glass of water",
+                purpose="Blood pressure control",
+                pill_shape="Round",
+                pill_color="Pink",
+                inventory_count=28,
+            ),
+            Medication(
+                profile_id=profile_robert.id,
+                name="Atorvastatin",
+                dosage="20 mg",
+                time_slot="night",
+                exact_time="21:30",
+                frequency="daily",
+                instructions="Take right before bedtime",
+                purpose="Cholesterol regulation",
+                pill_shape="Oval",
+                pill_color="White",
+                inventory_count=30,
+            ),
+        ]
+        db.add_all(meds_robert)
+        db.commit()
+        print(f"Seeded 4 daily prescriptions for Robert Jenkins (Morning, Afternoon, Evening, Night).")
+
+    # 4. Seed Prescriptions for Grandma Alice (Profile ID: profile_alice.id)
+    alice_med_count = db.query(Medication).filter(Medication.profile_id == profile_alice.id).count()
+    if alice_med_count == 0:
+        meds_alice = [
+            Medication(
+                profile_id=profile_alice.id,
+                name="Levothyroxine",
+                dosage="50 mcg",
+                time_slot="morning",
+                exact_time="07:30",
+                frequency="daily",
+                instructions="Take on an empty stomach with a full glass of water, 30 min before food",
+                purpose="Thyroid hormone replacement",
+                pill_shape="Round",
+                pill_color="White",
+                inventory_count=50,
+            ),
+            Medication(
+                profile_id=profile_alice.id,
+                name="Calcium + Vit D",
+                dosage="600 mg",
+                time_slot="afternoon",
+                exact_time="13:00",
+                frequency="daily",
+                instructions="Take with meal",
+                purpose="Osteoporosis bone strength",
+                pill_shape="Oval",
+                pill_color="Blue",
+                inventory_count=40,
+            ),
+            Medication(
+                profile_id=profile_alice.id,
+                name="Latanoprost Eye Drops",
+                dosage="0.005%",
+                time_slot="night",
+                exact_time="22:00",
+                frequency="daily",
+                instructions="1 drop in each eye before sleep",
+                purpose="Glaucoma eye pressure control",
+                pill_shape="Liquid",
+                pill_color="Clear",
+                inventory_count=1,
+            ),
+        ]
+        db.add_all(meds_alice)
+        db.commit()
+        print(f"Seeded 3 daily prescriptions for Alice Jenkins.")
+
+    db.close()
+    print("Database seeding completed successfully!")
+
+if __name__ == "__main__":
+    seed_database()
