@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Index
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -26,3 +26,7 @@ class Appointment(Base):
 
     profile = relationship("ElderlyProfile", backref="appointments")
     user = relationship("User")
+
+    __table_args__ = (
+        Index("idx_appointment_profile_status", "profile_id", "status"),
+    )

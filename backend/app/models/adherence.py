@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -24,4 +24,5 @@ class AdherenceLog(Base):
 
     __table_args__ = (
         UniqueConstraint("profile_id", "medication_id", "log_date", "time_slot", name="uq_profile_med_date_slot"),
+        Index("idx_adherence_profile_date", "profile_id", "log_date"),
     )

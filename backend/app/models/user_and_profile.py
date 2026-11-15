@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -64,4 +64,5 @@ class CareCircleMember(Base):
 
     __table_args__ = (
         UniqueConstraint("user_id", "profile_id", name="uq_user_profile_circle"),
+        Index("idx_member_user_profile", "user_id", "profile_id"),
     )

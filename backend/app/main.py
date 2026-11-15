@@ -33,10 +33,20 @@ try:
 except Exception as e:
     print(f"Startup seeder notice: {e}")
 
+tags_metadata = [
+    {"name": "Authentication", "description": "Passcode-based auth & 1-click demo personas"},
+    {"name": "Elderly Profiles & Care Circles", "description": "Manage profiles, members, and circle code sharing"},
+    {"name": "Medications Management", "description": "Prescription CRUD, dosage, and slot administration"},
+    {"name": "Adherence & Real-Time Logging", "description": "Daily 4-slot routine checklists & 7-day compliance history"},
+    {"name": "Doctor Appointments", "description": "Clinic visits scheduling, prep notes, and history"},
+    {"name": "Proactive Alerts & Reminders", "description": "Automated background email engine and audit trail"},
+]
+
 app = FastAPI(
-    title="Elderly Care & Medication Management Platform API",
+    title="CareCircle Elderly Care & Medication Management Platform API",
     version="1.0.0",
-    description="Backend API for elderly healthcare management, medication tracking, and care circle collaboration.",
+    description="Production-grade RESTful API engine for elderly healthcare management, real-time adherence tracking, and care circle collaboration.",
+    openapi_tags=tags_metadata,
 )
 
 # Resilient URL normalization middleware (handles accidental double slashes or missing /api prefix)
