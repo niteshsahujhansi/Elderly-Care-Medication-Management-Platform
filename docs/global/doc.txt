@@ -10,3 +10,12 @@ The system should proactively send email reminders for missed medications, upcom
 
 The challenge is to go beyond a basic reminder application. Think creatively and develop innovative ways to make elderly care smarter, more accessible, reliable, and collaborative, while ensuring that elderly individuals remain at the centre of their own healthcare decisions.
 
+
+Code assessment is performed automatically on the platform. It checks signals such as:
+
+Code Quality
+Security
+Efficiency
+Testing
+Accessibility
+Problem Statement Alignment

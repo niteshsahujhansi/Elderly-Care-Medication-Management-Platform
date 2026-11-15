@@ -39,9 +39,11 @@ def test_api():
         print(f"   -> {p['name']} (Code: {p['circle_code']}) | Role: {p['role_in_circle']}")
 
     # 5. Test Signup for a brand new user
+    import time
+    unique_email = f"watson_{int(time.time())}@demo.care"
     new_user_payload = {
         "name": "Dr. Watson",
-        "email_or_phone": "watson@demo.care",
+        "email_or_phone": unique_email,
         "passcode": "654321",
         "default_role": "caregiver"
     }

@@ -8,6 +8,17 @@ import {
   Medication,
   SlotGroupedMedications,
   MedicationCreateInput,
+  TodayAdherenceSummary,
+  AdherenceLogCreateInput,
+  AdherenceLogResponse,
+  WeeklyAdherenceHistory,
+  Appointment,
+  AppointmentCreateInput,
+  AppointmentUpdateInput,
+  AppointmentListSummary,
+  NotificationLog,
+  SendTestAlertRequest,
+  AlertScanResult,
 } from './types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -161,5 +172,136 @@ export const api = {
     return apiRequest<{ success: boolean; message: string }>(`/medications/${medicationId}`, {
       method: 'DELETE',
     });
+  },
+
+  // Adherence & Real-Time Logging
+  getTodayAdherence: async (
+    profileId: number,
+    targetDate?: string
+  ): Promise<TodayAdherenceSummary> => {
+    const url = targetDate
+      ? `/adherence/today?profile_id=${profileId}&target_date=${encodeURIComponent(targetDate)}`
+      : `/adherence/today?profile_id=${profileId}`;
+    return apiRequest<TodayAdherenceSummary>(url);
+  },
+
+  logAdherenceDose: async (
+    data: AdherenceLogCreateInput
+  ): Promise<AdherenceLogResponse> => {
+    return apiRequest<AdherenceLogResponse>('/adherence/log', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  resetAdherenceDose: async (
+    logId: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest<{ success: boolean; message: string }>(`/adherence/reset/${logId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  getAdherenceHistory: async (
+    profileId: number,
+    days: number = 7
+  ): Promise<WeeklyAdherenceHistory> => {
+    return apiRequest<WeeklyAdherenceHistory>(
+      `/adherence/history?profile_id=${profileId}&days=${days}`
+    );
+  },
+
+  // Medical Appointments Management
+  getAppointments: async (
+    profileId: number,
+    statusFilter?: string
+  ): Promise<Appointment[]> => {
+    const url = statusFilter
+      ? `/appointments?profile_id=${profileId}&status=${encodeURIComponent(statusFilter)}`
+      : `/appointments?profile_id=${profileId}`;
+    return apiRequest<Appointment[]>(url);
+  },
+
+  getAppointmentsSummary: async (
+    profileId: number
+  ): Promise<AppointmentListSummary> => {
+    return apiRequest<AppointmentListSummary>(`/appointments/summary?profile_id=${profileId}`);
+  },
+
+  createAppointment: async (
+    data: AppointmentCreateInput
+  ): Promise<Appointment> => {
+    return apiRequest<Appointment>('/appointments', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  updateAppointment: async (
+    appointmentId: number,
+    data: AppointmentUpdateInput
+  ): Promise<Appointment> => {
+    return apiRequest<Appointment>(`/appointments/${appointmentId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteAppointment: async (
+    appointmentId: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest<{ success: boolean; message: string }>(`/appointments/${appointmentId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Proactive Email Reminders & Missed Dose Alerts (Part 6)
+  sendTestAlert: async (data: SendTestAlertRequest): Promise<NotificationLog> => {
+    return apiRequest<NotificationLog>('/notifications/test-alert', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  scanAlerts: async (profileId: number): Promise<AlertScanResult> => {
+    return apiRequest<AlertScanResult>('/notifications/scan-alerts', {
+      method: 'POST',
+      body: JSON.stringify({ profile_id: profileId }),
+    });
+  },
+
+  getNotificationHistory: async (
+    profileId: number,
+    limit: number = 20
+  ): Promise<NotificationLog[]> => {
+    return apiRequest<NotificationLog[]>(
+      `/notifications/history?profile_id=${profileId}&limit=${limit}`
+    );
+  },
+
+  getUnreadNotificationCount: async (
+    profileId: number
+  ): Promise<{ unread_count: number }> => {
+    return apiRequest<{ unread_count: number }>(
+      `/notifications/unread-count?profile_id=${profileId}`
+    );
+  },
+
+  markNotificationRead: async (
+    notificationId: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest<{ success: boolean; message: string }>(
+      `/notifications/${notificationId}/read`,
+      { method: 'PUT' }
+    );
+  },
+
+  markAllNotificationsRead: async (
+    profileId: number
+  ): Promise<{ success: boolean; message: string }> => {
+    return apiRequest<{ success: boolean; message: string }>(
+      `/notifications/read-all?profile_id=${profileId}`,
+      { method: 'PUT' }
+    );
   },
 };

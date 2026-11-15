@@ -4,14 +4,16 @@ import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useActiveProfile } from '../../context/ActiveProfileContext';
 import { ProfileSwitcher } from './ProfileSwitcher';
+import { NotificationBell } from '../notifications/NotificationBell';
 import { HeartPulse, LogOut, User as UserIcon } from 'lucide-react';
 
 interface HeaderProps {
   onCreateProfileClick: () => void;
   onJoinCircleClick: () => void;
+  onOpenNotificationsClick?: () => void;
 }
 
-export function Header({ onCreateProfileClick, onJoinCircleClick }: HeaderProps) {
+export function Header({ onCreateProfileClick, onJoinCircleClick, onOpenNotificationsClick }: HeaderProps) {
   const { user, logout } = useAuth();
   const { activeSummary } = useActiveProfile();
 
@@ -43,9 +45,12 @@ export function Header({ onCreateProfileClick, onJoinCircleClick }: HeaderProps)
           </div>
         )}
 
-        {/* User info & Logout */}
+        {/* User info, Notifications & Logout */}
         {user && (
           <div className="flex items-center gap-3">
+            {/* In-App Notifications Bell */}
+            <NotificationBell onViewAllClick={onOpenNotificationsClick} />
+
             <div className="hidden md:flex items-center gap-2.5 text-right">
               <div className="flex flex-col items-end">
                 <p className="text-sm font-bold text-gray-900">{user.name}</p>

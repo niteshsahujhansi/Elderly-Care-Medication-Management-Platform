@@ -10,7 +10,11 @@ import { EditMedicationModal } from './EditMedicationModal';
 import { DeleteMedicationModal } from './DeleteMedicationModal';
 import { Pill, Plus, Calendar, Sparkles } from 'lucide-react';
 
-export function MedicationScheduleSection() {
+interface MedicationScheduleSectionProps {
+  onMedicationChanged?: () => void;
+}
+
+export function MedicationScheduleSection({ onMedicationChanged }: MedicationScheduleSectionProps = {}) {
   const { activeProfile, activeSummary } = useActiveProfile();
   const [groupedMeds, setGroupedMeds] = useState<SlotGroupedMedications | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -187,21 +191,30 @@ export function MedicationScheduleSection() {
       <AddMedicationModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        onSuccess={loadMedications}
+        onSuccess={() => {
+          loadMedications();
+          onMedicationChanged?.();
+        }}
       />
 
       <EditMedicationModal
         isOpen={!!editingMed}
         medication={editingMed}
         onClose={() => setEditingMed(null)}
-        onSuccess={loadMedications}
+        onSuccess={() => {
+          loadMedications();
+          onMedicationChanged?.();
+        }}
       />
 
       <DeleteMedicationModal
         isOpen={!!deletingMed}
         medication={deletingMed}
         onClose={() => setDeletingMed(null)}
-        onSuccess={loadMedications}
+        onSuccess={() => {
+          loadMedications();
+          onMedicationChanged?.();
+        }}
       />
     </section>
   );

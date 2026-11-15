@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useActiveProfile } from '../context/ActiveProfileContext';
+import { api } from '../lib/api';
+import { TodayAdherenceSummary, WeeklyAdherenceHistory } from '../lib/types';
 import { Header } from '../components/navigation/Header';
 import { PinPad } from '../components/auth/PinPad';
 import { CreateProfileModal } from '../components/modals/CreateProfileModal';
@@ -10,6 +12,11 @@ import { JoinCircleModal } from '../components/modals/JoinCircleModal';
 import { ProfileDetailsModal } from '../components/modals/ProfileDetailsModal';
 import { EditProfileModal } from '../components/modals/EditProfileModal';
 import { MedicationScheduleSection } from '../components/medications/MedicationScheduleSection';
+import { TodayAdherenceChecklist } from '../components/adherence/TodayAdherenceChecklist';
+import { WeeklyStreakCard } from '../components/adherence/WeeklyStreakCard';
+import { AppointmentsSection } from '../components/appointments/AppointmentsSection';
+import { AlertsBanner } from '../components/notifications/AlertsBanner';
+import { NotificationHistoryModal } from '../components/notifications/NotificationHistoryModal';
 import {
   HeartPulse,
   Users,
@@ -35,6 +42,7 @@ export default function Home() {
   const [isJoinOpen, setIsJoinOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isNotificationHistoryOpen, setIsNotificationHistoryOpen] = useState(false);
 
   // Auth form state
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
@@ -45,6 +53,64 @@ export default function Home() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authSubmitting, setAuthSubmitting] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  // Adherence state (Part 4)
+  const [adherenceSummary, setAdherenceSummary] = useState<TodayAdherenceSummary | null>(null);
+  const [adherenceHistory, setAdherenceHistory] = useState<WeeklyAdherenceHistory | null>(null);
+  const [adherenceLoading, setAdherenceLoading] = useState(false);
+
+  const loadAdherenceData = useCallback(async () => {
+    if (!activeProfile) {
+      setAdherenceSummary(null);
+      setAdherenceHistory(null);
+      return;
+    }
+    setAdherenceLoading(true);
+    try {
+      const [summary, history] = await Promise.all([
+        api.getTodayAdherence(activeProfile.id),
+        api.getAdherenceHistory(activeProfile.id, 7),
+      ]);
+      setAdherenceSummary(summary);
+      setAdherenceHistory(history);
+    } catch (err) {
+      console.error('Failed to load adherence data:', err);
+    } finally {
+      setAdherenceLoading(false);
+    }
+  }, [activeProfile]);
+
+  useEffect(() => {
+    loadAdherenceData();
+  }, [loadAdherenceData]);
+
+  const handleTakeDose = async (medicationId: number, timeSlot: string) => {
+    if (!activeProfile) return;
+    await api.logAdherenceDose({
+      profile_id: activeProfile.id,
+      medication_id: medicationId,
+      time_slot: timeSlot as any,
+      status: 'taken',
+    });
+    await loadAdherenceData();
+  };
+
+  const handleSkipDose = async (medicationId: number, timeSlot: string, notes: string) => {
+    if (!activeProfile) return;
+    await api.logAdherenceDose({
+      profile_id: activeProfile.id,
+      medication_id: medicationId,
+      time_slot: timeSlot as any,
+      status: 'skipped',
+      notes,
+    });
+    await loadAdherenceData();
+  };
+
+  const handleResetDose = async (logId: number) => {
+    await api.resetAdherenceDose(logId);
+    await loadAdherenceData();
+  };
 
   const handleCopyCode = () => {
     if (activeProfile?.circle_code) {
@@ -324,6 +390,7 @@ export default function Home() {
       <Header
         onCreateProfileClick={() => setIsCreateOpen(true)}
         onJoinCircleClick={() => setIsJoinOpen(true)}
+        onOpenNotificationsClick={() => setIsNotificationHistoryOpen(true)}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -476,8 +543,30 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Proactive Email Alerts Banner (Part 6) */}
+            <AlertsBanner />
+
+            {/* Today's Live Adherence Routine (Part 4) */}
+            <TodayAdherenceChecklist
+              summary={adherenceSummary}
+              loading={adherenceLoading}
+              userRole={activeSummary?.role_in_circle || user?.default_role || 'family'}
+              onTakeDose={handleTakeDose}
+              onSkipDose={handleSkipDose}
+              onResetDose={handleResetDose}
+            />
+
+            {/* 7-Day Adherence Streak & History (Part 4) */}
+            <WeeklyStreakCard
+              history={adherenceHistory}
+              loading={adherenceLoading}
+            />
+
             {/* Medication Schedule Section (Part 3) */}
-            <MedicationScheduleSection />
+            <MedicationScheduleSection onMedicationChanged={loadAdherenceData} />
+
+            {/* Medical Appointments Section (Part 5) */}
+            <AppointmentsSection />
           </>
         )}
       </main>
@@ -491,6 +580,14 @@ export default function Home() {
         onEditClick={() => setIsEditOpen(true)}
       />
       <EditProfileModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
+      {activeProfile && (
+        <NotificationHistoryModal
+          isOpen={isNotificationHistoryOpen}
+          profileId={activeProfile.id}
+          seniorName={activeProfile.name}
+          onClose={() => setIsNotificationHistoryOpen(false)}
+        />
+      )}
     </div>
   );
 }

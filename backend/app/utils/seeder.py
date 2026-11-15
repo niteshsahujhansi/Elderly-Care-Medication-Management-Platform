@@ -2,6 +2,9 @@ import hashlib
 from app.database import SessionLocal, engine, Base
 from app.models.user_and_profile import User, ElderlyProfile, CareCircleMember
 from app.models.medication import Medication
+from app.models.adherence import AdherenceLog
+from app.models.appointment import Appointment
+from datetime import datetime, timedelta
 
 def hash_passcode(pin: str) -> str:
     return hashlib.sha256(pin.strip().encode()).hexdigest()
@@ -207,6 +210,111 @@ def seed_database():
         db.add_all(meds_alice)
         db.commit()
         print(f"Seeded 3 daily prescriptions for Alice Jenkins.")
+
+    # 5. Seed Adherence Logs for Robert Jenkins
+    robert_meds = db.query(Medication).filter(Medication.profile_id == profile_robert.id).all()
+    today_dt = datetime.utcnow().date()
+    today_str = today_dt.strftime("%Y-%m-%d")
+
+    # Past 6 days of 100% adherence logs
+    for days_ago in range(6, 0, -1):
+        past_date_str = (today_dt - timedelta(days=days_ago)).strftime("%Y-%m-%d")
+        for med in robert_meds:
+            existing = db.query(AdherenceLog).filter(
+                AdherenceLog.profile_id == profile_robert.id,
+                AdherenceLog.medication_id == med.id,
+                AdherenceLog.log_date == past_date_str,
+            ).first()
+            if not existing:
+                db.add(AdherenceLog(
+                    profile_id=profile_robert.id,
+                    medication_id=med.id,
+                    logged_by_user_id=user_robert.id,
+                    logged_by_name="Robert Jenkins",
+                    log_date=past_date_str,
+                    time_slot=med.time_slot,
+                    status="taken",
+                    logged_at=datetime.utcnow() - timedelta(days=days_ago),
+                    notes="Taken on time with water"
+                ))
+
+    # Today: Morning dose already taken, others pending for interactive testing
+    for med in robert_meds:
+        if med.time_slot == "morning":
+            existing = db.query(AdherenceLog).filter(
+                AdherenceLog.profile_id == profile_robert.id,
+                AdherenceLog.medication_id == med.id,
+                AdherenceLog.log_date == today_str,
+            ).first()
+            if not existing:
+                db.add(AdherenceLog(
+                    profile_id=profile_robert.id,
+                    medication_id=med.id,
+                    logged_by_user_id=user_robert.id,
+                    logged_by_name="Robert Jenkins",
+                    log_date=today_str,
+                    time_slot="morning",
+                    status="taken",
+                    logged_at=datetime.utcnow() - timedelta(hours=3),
+                    notes="Taken after breakfast oatmeal"
+                ))
+
+    db.commit()
+    print("Seeded adherence history and today's morning dose for Robert Jenkins.")
+
+    # 6. Seed Appointments
+    robert_app_count = db.query(Appointment).filter(Appointment.profile_id == profile_robert.id).count()
+    if robert_app_count == 0:
+        apps_robert = [
+            Appointment(
+                profile_id=profile_robert.id,
+                scheduled_by_user_id=user_sarah.id,
+                scheduled_by_name="Sarah Jenkins (Daughter)",
+                doctor_name="Dr. Sarah Adams",
+                specialty="Cardiologist",
+                clinic_or_hospital="City Memorial Hospital, Heart Care Suite 302",
+                appointment_datetime=(datetime.utcnow() + timedelta(days=3)).strftime("%Y-%m-%dT10:30"),
+                contact_phone="+1-555-0222",
+                purpose_or_reason="Routine Blood Pressure & ECG Assessment",
+                preparation_notes="Fast 8 hours prior. Bring daily blood pressure log and current prescription bottles.",
+                status="upcoming",
+            ),
+            Appointment(
+                profile_id=profile_robert.id,
+                scheduled_by_user_id=user_elena.id,
+                scheduled_by_name="Nurse Elena Vance",
+                doctor_name="Dr. Robert Vance",
+                specialty="Optometrist",
+                clinic_or_hospital="West Valley Eye Clinic",
+                appointment_datetime=(datetime.utcnow() - timedelta(days=14)).strftime("%Y-%m-%dT14:00"),
+                contact_phone="+1-555-0450",
+                purpose_or_reason="Glaucoma eye pressure check & lens update",
+                preparation_notes="Bring sunglasses for eye dilation.",
+                status="completed",
+            ),
+        ]
+        db.add_all(apps_robert)
+        db.commit()
+        print("Seeded 2 medical appointments for Robert Jenkins (1 Upcoming, 1 Completed).")
+
+    alice_app_count = db.query(Appointment).filter(Appointment.profile_id == profile_alice.id).count()
+    if alice_app_count == 0:
+        app_alice = Appointment(
+            profile_id=profile_alice.id,
+            scheduled_by_user_id=user_robert.id,
+            scheduled_by_name="Robert Jenkins (Grandpa)",
+            doctor_name="Dr. Michael Chen",
+            specialty="Endocrinologist",
+            clinic_or_hospital="St. Jude Medical Center, Room 105",
+            appointment_datetime=(datetime.utcnow() + timedelta(days=5)).strftime("%Y-%m-%dT14:00"),
+            contact_phone="+1-555-0333",
+            purpose_or_reason="Thyroid hormone levels & bone density review",
+            preparation_notes="Take morning Levothyroxine as usual with full glass of water.",
+            status="upcoming",
+        )
+        db.add(app_alice)
+        db.commit()
+        print("Seeded 1 upcoming medical appointment for Alice Jenkins.")
 
     db.close()
     print("Database seeding completed successfully!")

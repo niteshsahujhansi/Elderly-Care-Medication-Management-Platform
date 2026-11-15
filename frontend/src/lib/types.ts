@@ -125,3 +125,143 @@ export interface MedicationCreateInput {
   end_date?: string;
   inventory_count?: number;
 }
+
+export interface TodayDoseItem {
+  medication_id: number;
+  name: string;
+  dosage: string;
+  time_slot: 'morning' | 'afternoon' | 'evening' | 'night';
+  exact_time: string;
+  instructions?: string | null;
+  purpose?: string | null;
+  pill_shape?: string | null;
+  pill_color?: string | null;
+  status: 'pending' | 'taken' | 'skipped';
+  log_id?: number | null;
+  logged_at?: string | null;
+  logged_by_name?: string | null;
+  notes?: string | null;
+}
+
+export interface TodayAdherenceSummary {
+  date: string;
+  profile_id: number;
+  total_doses: number;
+  taken_count: number;
+  skipped_count: number;
+  pending_count: number;
+  compliance_percentage: number;
+  slots: {
+    morning: TodayDoseItem[];
+    afternoon: TodayDoseItem[];
+    evening: TodayDoseItem[];
+    night: TodayDoseItem[];
+  };
+}
+
+export interface DayComplianceStat {
+  date: string;
+  day_name: string;
+  total: number;
+  taken: number;
+  skipped: number;
+  percentage: number;
+}
+
+export interface WeeklyAdherenceHistory {
+  profile_id: number;
+  average_compliance: number;
+  days: DayComplianceStat[];
+}
+
+export interface AdherenceLogCreateInput {
+  profile_id: number;
+  medication_id: number;
+  status: 'taken' | 'skipped';
+  log_date?: string;
+  time_slot: 'morning' | 'afternoon' | 'evening' | 'night';
+  notes?: string;
+}
+
+export interface AdherenceLogResponse {
+  id: number;
+  profile_id: number;
+  medication_id: number;
+  logged_by_name: string;
+  log_date: string;
+  time_slot: string;
+  status: 'taken' | 'skipped';
+  logged_at: string;
+  notes?: string | null;
+}
+
+export interface Appointment {
+  id: number;
+  profile_id: number;
+  scheduled_by_name: string;
+  doctor_name: string;
+  specialty: string;
+  clinic_or_hospital: string;
+  appointment_datetime: string;
+  contact_phone?: string | null;
+  purpose_or_reason?: string | null;
+  preparation_notes?: string | null;
+  status: 'upcoming' | 'completed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AppointmentCreateInput {
+  profile_id: number;
+  doctor_name: string;
+  specialty: string;
+  clinic_or_hospital: string;
+  appointment_datetime: string;
+  contact_phone?: string;
+  purpose_or_reason?: string;
+  preparation_notes?: string;
+}
+
+export interface AppointmentUpdateInput {
+  doctor_name?: string;
+  specialty?: string;
+  clinic_or_hospital?: string;
+  appointment_datetime?: string;
+  contact_phone?: string;
+  purpose_or_reason?: string;
+  preparation_notes?: string;
+  status?: 'upcoming' | 'completed' | 'cancelled';
+}
+
+export interface AppointmentListSummary {
+  upcoming: Appointment[];
+  past_or_completed: Appointment[];
+  total_upcoming: number;
+}
+
+export interface NotificationLog {
+  id: number;
+  profile_id: number;
+  recipient_email: string;
+  recipient_name: string;
+  alert_type: 'missed_dose_alert' | 'upcoming_dose_reminder' | 'appointment_reminder' | 'test_alert';
+  subject: string;
+  message_content: string;
+  status: 'sent' | 'simulated' | 'failed';
+  is_read: boolean;
+  sent_at: string;
+}
+
+export interface SendTestAlertRequest {
+  profile_id: number;
+  alert_type: 'missed_dose_alert' | 'upcoming_dose_reminder' | 'appointment_reminder';
+  target_email?: string;
+}
+
+export interface AlertScanResult {
+  profile_id: number;
+  scanned_at: string;
+  alerts_dispatched: number;
+  overdue_doses_found: number;
+  details: string[];
+}

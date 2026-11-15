@@ -12,7 +12,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.models.user_and_profile import User, ElderlyProfile, CareCircleMember
 from app.models.medication import Medication
-from app.routers import auth_router, profiles_router, medications_router
+from app.models.adherence import AdherenceLog
+from app.models.appointment import Appointment
+from app.models.notification import NotificationLog
+from app.routers import (
+    auth_router,
+    profiles_router,
+    medications_router,
+    adherence_router,
+    appointment_router,
+    notification_router,
+)
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -36,6 +46,9 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(profiles_router)
 app.include_router(medications_router)
+app.include_router(adherence_router)
+app.include_router(appointment_router)
+app.include_router(notification_router)
 
 
 @app.get("/")
