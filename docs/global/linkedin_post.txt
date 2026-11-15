@@ -1,14 +1,14 @@
 🚀 I just participated in CATALYST - Solo AI Hackathon, organized by Makers Need More (MnM) in collaboration with PromptWars and supported by Google for Developers!
 
-It was an incredible opportunity to turn ideas into reality, explore AI-driven healthcare solutions, and build something truly meaningful.
+Built and deployed end-to-end in just 7 hours, it was an incredible challenge to turn ideas into reality, explore AI-driven healthcare solutions, and build something truly meaningful.
 
 💡 My Project:
-CareCircle (केयरसर्कल) — A Smart, Interconnected Elderly Care & Healthcare Routine Platform designed to empower seniors with independence while giving families and caregivers complete peace of mind.
+CareCircle — A Smart, Interconnected Elderly Care & Healthcare Routine Platform designed to empower seniors with independence while giving families and caregivers complete peace of mind.
 
 🔍 Problem Statement:
 Elderly Care & Medication Management Platform
 
-🛠️ What I Built:
+🛠️ What I Built in 7 Hours:
 CareCircle addresses elderly medication non-adherence, clinical confusion, and family anxiety through an empathetic web platform:
 
 • 🔐 Passcode Care Ecosystem: Frictionless 6-digit PIN login connecting Seniors (Kiosk mode), Family Members, Visiting Nurses, and Viewers via a shared Universal Circle Code.
@@ -24,9 +24,9 @@ CareCircle addresses elderly medication non-adherence, clinical confusion, and f
 • Testing: Pytest (21/21 passing in 0.71s), TypeScript (0 errors)
 • Deployment: Vercel (Frontend) + Render (Backend) + GitHub CI
 
-📌 Project Demo: https://elderly-care-medication-management-two.vercel.app/
-📌 Interactive API: https://elderly-care-medication-management-rzo4.onrender.com/docs
-📌 GitHub Repo: https://github.com/niteshsahujhansi/Elderly-Care-Medication-Management-Platform
+📌 Project Demo: https://lnkd.in/g4-frSp2
+📌 Interactive API: https://lnkd.in/giDxxr5P
+📌 GitHub Repo: https://lnkd.in/g4yemFhi
 
 (Make sure to tag @Makers Need More (MnM) and @PromptWars manually in your post!)
 

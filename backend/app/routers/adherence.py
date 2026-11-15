@@ -1,7 +1,8 @@
+from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List, Optional, Dict
 from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models.user_and_profile import User, CareCircleMember, ElderlyProfile
@@ -258,6 +259,26 @@ def get_adherence_history(
     )
 
     today = datetime.utcnow().date()
+    start_date = today - timedelta(days=days - 1)
+    start_date_str = start_date.strftime("%Y-%m-%d")
+    today_str = today.strftime("%Y-%m-%d")
+
+    # High-efficiency batch query: Fetch all logs for the entire date range in 1 single SQL query
+    all_logs = (
+        db.query(AdherenceLog)
+        .filter(
+            AdherenceLog.profile_id == profile_id,
+            AdherenceLog.log_date >= start_date_str,
+            AdherenceLog.log_date <= today_str,
+        )
+        .all()
+    )
+
+    # In-memory O(1) hash grouping
+    logs_by_date: Dict[str, List[AdherenceLog]] = defaultdict(list)
+    for log in all_logs:
+        logs_by_date[log.log_date].append(log)
+
     day_stats: List[DayComplianceStat] = []
     total_percentage_sum = 0
 
@@ -266,18 +287,10 @@ def get_adherence_history(
         date_str = target_d.strftime("%Y-%m-%d")
         day_name = target_d.strftime("%a")
 
-        logs = (
-            db.query(AdherenceLog)
-            .filter(
-                AdherenceLog.profile_id == profile_id,
-                AdherenceLog.log_date == date_str,
-            )
-            .all()
-        )
-
-        taken_count = sum(1 for l in logs if l.status == "taken")
-        skipped_count = sum(1 for l in logs if l.status == "skipped")
-        total_doses = max(meds_count, len(logs))
+        day_logs = logs_by_date.get(date_str, [])
+        taken_count = sum(1 for l in day_logs if l.status == "taken")
+        skipped_count = sum(1 for l in day_logs if l.status == "skipped")
+        total_doses = max(meds_count, len(day_logs))
 
         pct = round((taken_count / total_doses) * 100) if total_doses > 0 else 100
         total_percentage_sum += pct

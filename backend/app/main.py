@@ -9,6 +9,7 @@ if parent_dir not in sys.path:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from app.database import engine, Base
 from app.models.user_and_profile import User, ElderlyProfile, CareCircleMember
 from app.models.medication import Medication
@@ -61,6 +62,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# GZip compression middleware for maximum payload transfer efficiency
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Include Routers
 app.include_router(auth_router)

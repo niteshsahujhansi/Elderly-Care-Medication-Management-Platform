@@ -1,7 +1,7 @@
 import random
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models.user_and_profile import User, ElderlyProfile, CareCircleMember
@@ -84,6 +84,7 @@ def get_my_accessible_profiles(
     """Returns all elderly profiles the logged-in user has access to."""
     memberships = (
         db.query(CareCircleMember)
+        .options(joinedload(CareCircleMember.profile))
         .filter(CareCircleMember.user_id == current_user.id)
         .all()
     )
