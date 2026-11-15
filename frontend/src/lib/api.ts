@@ -21,7 +21,21 @@ import {
   AlertScanResult,
 } from './types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+function getApiBase(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (!envUrl) {
+    return 'http://localhost:8000/api';
+  }
+  // Remove all trailing slashes
+  let cleanUrl = envUrl.replace(/\/+$/, '');
+  // Auto-append /api if omitted
+  if (!cleanUrl.endsWith('/api')) {
+    cleanUrl = `${cleanUrl}/api`;
+  }
+  return cleanUrl;
+}
+
+const API_BASE = getApiBase();
 
 export function getStoredToken(): string | null {
   if (typeof window === 'undefined') return null;

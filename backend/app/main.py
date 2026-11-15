@@ -23,15 +23,35 @@ from app.routers import (
     appointment_router,
     notification_router,
 )
+from app.utils.seeder import seed_database
 
-# Initialize database tables
+# Initialize database tables and auto-seed demo data if fresh deployment
 Base.metadata.create_all(bind=engine)
+try:
+    seed_database()
+except Exception as e:
+    print(f"Startup seeder notice: {e}")
 
 app = FastAPI(
     title="Elderly Care & Medication Management Platform API",
     version="1.0.0",
     description="Backend API for elderly healthcare management, medication tracking, and care circle collaboration.",
 )
+
+# Resilient URL normalization middleware (handles accidental double slashes or missing /api prefix)
+@app.middleware("http")
+async def normalize_api_path(request, call_next):
+    path = request.url.path
+    if path.startswith("//"):
+        path = "/" + path.lstrip("/")
+        request.scope["path"] = path
+
+    known_prefixes = ("/auth", "/profiles", "/medications", "/adherence", "/appointments", "/notifications")
+    if any(path.startswith(p) for p in known_prefixes):
+        request.scope["path"] = f"/api{path}"
+
+    response = await call_next(request)
+    return response
 
 # CORS Middleware (Permissive for local development & Next.js frontend)
 app.add_middleware(
